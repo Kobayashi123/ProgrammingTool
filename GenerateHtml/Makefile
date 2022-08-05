@@ -1,10 +1,11 @@
 PYTHON	= python
 PYDOC	= pydoc
+PRODUCT = $(shell find . -name "*.html")
 PYCS	= $(shell find . -name "*.pyc")
 PYCACHE	= $(shell find . -name "__pycache__")
 MODULE	= GenerateHtml
 TARGET	= $(MODULE).py
-PACKAGE	= jp.ac.kyoto_su.cse.ap.python
+PACKAGE	= .
 PKGPATH	= $(shell echo $(PACKAGE) | sed -e 's/\./\//g')
 PKGTDIR	= $(shell echo $(PACKAGE) | cut -d '.' -f1)
 INSTDIR	= Example.app/Contents/Resources/Python/
@@ -13,7 +14,7 @@ WORKDIR	= ./
 PYLINT	= pylint
 LINTRCF	= pylintrc.txt
 LINTRST	= pylintresult.txt
-ARGS	=
+ARGS	= temp
 TARGZ	= GenerateHtml.tar.gz
 ARVER	= $(shell basename $(TARGZ) .tar.gz)
 
@@ -25,6 +26,7 @@ wipe: clean
 	(cd ../ ; rm -f ./$(ARCHIVE).zip)
 
 clean:
+	@for each in ${PRODUCT} ; do echo "rm -f $${each}" ; rm -f $${each} ; done
 	@for each in ${PYCS} ; do echo "rm -f $${each}" ; rm -f $${each} ; done
 	@for each in ${PYCACHE} ; do echo "rm -f $${each}" ; rm -rf $${each} ; done
 	@if [ -e $(INSTDIR) ] ; then echo "rm -f -r $(INSTDIR)" ; rm -f -r $(INSTDIR) ; fi
@@ -58,7 +60,7 @@ unittest:
 
 lint:
 	@if [ ! -e $(LINTRCF) ] ; then $(PYLINT) --generate-rcfile > $(LINTRCF) 2> /dev/null ; fi
-	$(PYLINT) --rcfile=$(LINTRCF) --extension-pkg-whitelist=PyQt5 ./$(TARGET) `find ./$(PKGPATH) -name "*.py" -not -name "__init__.py"` > $(LINTRST) ; less $(LINTRST)
+	$(PYLINT) --rcfile=$(LINTRCF) ./$(TARGET) `find ./$(PKGPATH) -name "*.py" -not -name "__init__.py"` > $(LINTRST) ; less $(LINTRST)
 
 #
 # pip is the PyPA recommended tool for installing Python packages.
