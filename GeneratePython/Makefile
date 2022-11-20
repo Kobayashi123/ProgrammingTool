@@ -1,6 +1,6 @@
 PYTHON	= python
 PYDOC	= pydoc
-PRODUCT =
+PRODUCT = ${ARGS}.py
 PYCS	= $(shell find . -name "*.pyc")
 PYCACHE	= $(shell find . -name "__pycache__")
 MODULE	= GeneratePython
